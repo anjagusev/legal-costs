@@ -1,0 +1,82 @@
+{
+  "currency": "CAD",
+  "generatedAt": "2026-02-21T14:22:35.575453Z",
+  "source": {
+    "workbook": "Legal_Etransfer_Payments.xlsx",
+    "sheet": "Legal Payments"
+  },
+  "asOfMonth": "2026-02",
+  "total": 17757.53,
+  "monthly": [
+    {
+      "month": "2025-08",
+      "total": 5836.75,
+      "cumulative": 5836.75,
+      "byCategory": {
+        "Mediation": 5536.75,
+        "Legal counsel": 300.0
+      }
+    },
+    {
+      "month": "2025-09",
+      "total": 593.24,
+      "cumulative": 6429.99,
+      "byCategory": {
+        "Legal counsel": 593.24
+      }
+    },
+    {
+      "month": "2025-10",
+      "total": 3852.58,
+      "cumulative": 10282.57,
+      "byCategory": {
+        "Mediation": 2808.46,
+        "Legal counsel": 1044.12
+      }
+    },
+    {
+      "month": "2025-11",
+      "total": 3980.4,
+      "cumulative": 14262.97,
+      "byCategory": {
+        "Legal counsel": 2084.82,
+        "Mediation": 1895.58
+      }
+    },
+    {
+      "month": "2025-12",
+      "total": 2877.58,
+      "cumulative": 17140.55,
+      "byCategory": {
+        "Mediation": 2308.03,
+        "Legal counsel": 569.55
+      }
+    },
+    {
+      "month": "2026-02",
+      "total": 616.98,
+      "cumulative": 17757.53,
+      "byCategory": {
+        "Legal counsel": 616.98
+      }
+    }
+  ],
+  "byCategory": {
+    "Mediation": 12548.82,
+    "Legal counsel": 5208.71
+  },
+  "privacy": {
+    "detailLevel": "monthly-aggregates",
+    "publicFields": [
+      "month",
+      "total",
+      "cumulative",
+      "byCategory"
+    ],
+    "excludedFields": [
+      "provider names",
+      "invoice line items",
+      "matter details"
+    ]
+  }
+}

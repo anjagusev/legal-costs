@@ -1,0 +1,29 @@
+---
+type Props = {
+	data: any;
+};
+
+const { data } = Astro.props;
+
+const base = import.meta.env.BASE_URL || '/';
+const chartsSrc = `${base}cost-charts.js`;
+---
+
+<div class="controls">
+	<div class="seg" role="group" aria-label="Time range">
+		<button type="button" data-range="all" aria-pressed="true">All time</button>
+		<button type="button" data-range="12" aria-pressed="false">Last 12 months</button>
+	</div>
+	<div class="seg" role="group" aria-label="View">
+		<button type="button" data-view="total" aria-pressed="true">Total</button>
+		<button type="button" data-view="category" aria-pressed="false">By category</button>
+	</div>
+</div>
+
+<div class="chart" id="lc_chart_monthly"></div>
+<div style="height: 14px"></div>
+<div class="chart" id="lc_chart_cumulative"></div>
+
+<script type="application/json" id="lc_data" set:html={JSON.stringify(data)}></script>
+
+<script type="module" src={chartsSrc}></script>

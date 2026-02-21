@@ -1,0 +1,118 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CostCharts from '../components/CostCharts.astro';
+import data from '../data/legal-costs.public.json';
+
+const asOf = data.asOfMonth ? `${data.asOfMonth}-01` : null;
+const asOfLabel = data.asOfMonth ? data.asOfMonth : 'N/A';
+
+function money(n) {
+	try {
+		return new Intl.NumberFormat('en-CA', {
+			style: 'currency',
+			currency: data.currency || 'CAD',
+			maximumFractionDigits: 2,
+		}).format(n);
+	} catch {
+		return `$${Number(n || 0).toFixed(2)}`;
+	}
+}
+
+const months = Array.isArray(data.monthly) ? data.monthly : [];
+const lastMonth = months.at(-1);
+const peak = months.reduce((acc, m) => (m.total > acc.total ? m : acc), { month: null, total: 0 });
+const avg = months.length ? data.total / months.length : 0;
+---
+
+<BaseLayout title="Legal Cost Counter">
+	<div class="wrap">
+		<div class="topbar">
+			<div class="brand">
+				<h1>Legal Cost Counter</h1>
+			</div>
+		</div>
+
+		<section class="hero" aria-label="Total legal costs">
+			<p class="kicker">Aggregated total (manual updates only)</p>
+			<h2 class="bigNumber">
+				<span id="lc_total">{money(data.total)}</span>
+			</h2>
+			<div class="subline">
+				As of <strong>{asOfLabel}</strong>. This page shows monthly aggregates only.
+			</div>
+
+			<div class="meta" aria-label="Key metrics">
+				<div class="stat">
+					<div class="label">Average / month</div>
+					<div class="value">{money(avg)}</div>
+				</div>
+				<div class="stat">
+					<div class="label">Peak month</div>
+					<div class="value">{peak.month || 'N/A'} ({money(peak.total)})</div>
+				</div>
+				<div class="stat">
+					<div class="label">Months tracked</div>
+					<div class="value">{months.length}</div>
+				</div>
+			</div>
+		</section>
+
+		<div class="grid">
+			<section class="card" aria-label="Charts">
+				<h2>Costs over time</h2>
+				<CostCharts data={data} />
+			</section>
+
+			<section class="card" aria-label="Methodology">
+				<h2>Methodology</h2>
+				<div class="prose">
+					<p>
+						<strong>What this is:</strong> a public, aggregated tally of separation-related legal costs to make the financial impact visible.
+					</p>
+					<p>
+						<strong>Why this exists:</strong> for advocacy and education about how prolonged post-separation legal processes can create sustained financial strain.
+					</p>
+					<p>
+						<strong>What is shown:</strong> monthly totals, cumulative totals, and broad categories (e.g., legal counsel, mediation).
+					</p>
+					<p>
+						<strong>What is not shown:</strong> invoices, line items, work descriptions, strategy, case events, or details about any other person.
+					</p>
+					<p>
+						<strong>Updates:</strong> manual only, when new invoices/payments are recorded.
+					</p>
+				</div>
+			</section>
+		</div>
+	</div>
+
+	<script>
+		// Animated reveal for the headline value (display only; value is fixed).
+		(function () {
+			var el = document.getElementById('lc_total');
+			if (!el) return;
+			var finalText = el.textContent || '';
+			var numeric = Number(String(finalText).replace(/[^0-9.\-]/g, ''));
+			if (!Number.isFinite(numeric)) return;
+
+			var fmt;
+			try {
+				fmt = new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 2 });
+			} catch (e) {
+				fmt = { format: function (v) { return '$' + v.toFixed(2); } };
+			}
+
+			var start = performance.now();
+			var dur = 900;
+			function tick(now) {
+				var t = Math.min(1, (now - start) / dur);
+				var eased = 1 - Math.pow(1 - t, 3);
+				var v = numeric * eased;
+				el.textContent = fmt.format(v);
+				if (t < 1) requestAnimationFrame(tick);
+				else el.textContent = finalText;
+			}
+			requestAnimationFrame(tick);
+		})();
+	</script>
+</BaseLayout>

@@ -1,0 +1,26 @@
+{
+  "name": "site",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=18.17.0",
+    "npm": ">=9.0.0"
+  },
+  "scripts": {
+    "update-data": "python3 scripts/build-public-data.py",
+    "predev": "npm run update-data",
+    "prebuild": "npm run update-data",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@fontsource/fraunces": "^5.2.9",
+    "@fontsource/ibm-plex-mono": "^5.2.7",
+    "@fontsource/ibm-plex-sans": "^5.2.8",
+    "@fontsource/source-serif-4": "^5.2.9",
+    "@observablehq/plot": "^0.6.17",
+    "astro": "^5.17.1"
+  }
+}
