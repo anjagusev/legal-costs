@@ -8,10 +8,9 @@
   },
   "scripts": {
     "update-data": "python3 scripts/build-public-data.py",
-    "predev": "npm run update-data",
-    "prebuild": "npm run update-data",
     "dev": "astro dev",
     "build": "astro build",
+    "build:with-data": "npm run update-data && npm run build",
     "preview": "astro preview",
     "astro": "astro"
   },

@@ -101,9 +101,32 @@ def read_sheet_rows(xlsx_path):
 
 
 def main():
-	repo_root = os.path.abspath(os.path.join(os.getcwd(), ".."))
-	input_path = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 else os.path.join(repo_root, "Legal_Etransfer_Payments.xlsx")
-	out_path = os.path.abspath(sys.argv[2]) if len(sys.argv) > 2 else os.path.join(os.getcwd(), "src", "data", "legal-costs.public.json")
+	# This script runs in both local dev and Netlify.
+	# Depending on Netlify "base directory" settings, the current working directory
+	# might be the project root (preferred) or a subdirectory. Resolve paths in a
+	# resilient way rather than assuming "cwd/..".
+	script_dir = os.path.dirname(os.path.abspath(__file__))
+	project_root_guess = os.path.abspath(os.path.join(script_dir, ".."))
+
+	# Allow overriding the input workbook path.
+	input_override = os.environ.get("LEGAL_COSTS_XLSX")
+	if len(sys.argv) > 1:
+		input_path = os.path.abspath(sys.argv[1])
+	elif input_override:
+		input_path = os.path.abspath(input_override)
+	else:
+		candidates = [
+			os.path.join(os.getcwd(), "Legal_Etransfer_Payments.xlsx"),
+			os.path.join(project_root_guess, "Legal_Etransfer_Payments.xlsx"),
+			os.path.join(os.path.abspath(os.path.join(os.getcwd(), "..")), "Legal_Etransfer_Payments.xlsx"),
+		]
+		input_path = next((os.path.abspath(p) for p in candidates if os.path.exists(p)), os.path.abspath(candidates[0]))
+
+	# Default output path: <project root>/src/data/...
+	if len(sys.argv) > 2:
+		out_path = os.path.abspath(sys.argv[2])
+	else:
+		out_path = os.path.join(project_root_guess, "src", "data", "legal-costs.public.json")
 
 	rows = read_sheet_rows(input_path)
 	rows.sort(key=lambda x: x[0])
