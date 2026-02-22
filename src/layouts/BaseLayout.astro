@@ -25,13 +25,13 @@ const BASE_URL = import.meta.env.BASE_URL || '/';
 		<meta name="description" content="A public, aggregated tally of legal costs over time." />
 		{GA_ID ? (
 			<>
+				<!-- Google tag (gtag.js) -->
 				<script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
-				<script is:inline data-ga-id={GA_ID}>
+				<script is:inline define:vars={{ GA_ID }}>
 					window.dataLayer = window.dataLayer || [];
 					function gtag(){dataLayer.push(arguments);}
 					gtag('js', new Date());
-					var __gaId = document.currentScript && document.currentScript.getAttribute('data-ga-id');
-					if (__gaId) gtag('config', __gaId, { anonymize_ip: true });
+					gtag('config', GA_ID, { anonymize_ip: true });
 				</script>
 			</>
 		) : null}

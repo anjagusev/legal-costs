@@ -1,0 +1,6 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  PUBLIC_GA_MEASUREMENT_ID = "G-PT1EDKZRY1"
