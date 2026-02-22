@@ -271,6 +271,40 @@ select {
 	color: var(--text);
 }
 
+.catTotals {
+	display: grid;
+	gap: 10px;
+}
+
+.catRow {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 10px 12px;
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--border);
+	background: color-mix(in srgb, var(--panel2) 92%, transparent);
+}
+
+.catName {
+	color: var(--text);
+	font-size: 14px;
+	line-height: 1.25;
+}
+
+.catValue {
+	font-family: var(--font-mono);
+	color: var(--text);
+	white-space: nowrap;
+}
+
+.catPct {
+	margin-left: 10px;
+	font-size: 12px;
+	color: var(--faint);
+}
+
 @media (min-width: 920px) {
 	.grid {
 		grid-template-columns: 1.2fr 0.8fr;

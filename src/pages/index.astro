@@ -22,6 +22,24 @@ const months = Array.isArray(data.monthly) ? data.monthly : [];
 const lastMonth = months.at(-1);
 const peak = months.reduce((acc, m) => (m.total > acc.total ? m : acc), { month: null, total: 0 });
 const avg = months.length ? data.total / months.length : 0;
+
+const catRows = (() => {
+	const src = data && typeof data.byCategory === 'object' && data.byCategory ? data.byCategory : null;
+	if (!src) return [];
+	const entries = Object.entries(src)
+		.map(([name, amount]) => ({
+			name: String(name),
+			amount: Number(amount || 0),
+		}))
+		.filter((r) => r.name && Number.isFinite(r.amount) && r.amount > 0)
+		.sort((a, b) => b.amount - a.amount);
+
+	const total = Number(data.total || 0);
+	return entries.map((r) => ({
+		...r,
+		pct: total > 0 ? r.amount / total : 0,
+	}));
+})();
 ---
 
 <BaseLayout title="Legal Cost Counter">
@@ -63,6 +81,23 @@ const avg = months.length ? data.total / months.length : 0;
 				<CostCharts data={data} />
 			</section>
 
+			{catRows.length ? (
+				<section class="card" aria-label="Category totals">
+					<h2>Category totals</h2>
+					<div class="catTotals" role="list">
+						{catRows.map((r) => (
+							<div class="catRow" role="listitem">
+								<div class="catName">{r.name}</div>
+								<div class="catValue">
+									{money(r.amount)}
+									<span class="catPct">{(r.pct * 100).toFixed(1)}%</span>
+								</div>
+							</div>
+						))}
+					</div>
+				</section>
+			) : null}
+
 			<section class="card" aria-label="Methodology">
 				<h2>Methodology</h2>
 				<div class="prose">
@@ -73,7 +108,7 @@ const avg = months.length ? data.total / months.length : 0;
 						<strong>Why this exists:</strong> for advocacy and education about how prolonged post-separation legal processes can create sustained financial strain.
 					</p>
 					<p>
-						<strong>What is shown:</strong> monthly totals, cumulative totals, and broad categories (e.g., legal counsel, mediation).
+						<strong>What is shown:</strong> monthly totals, cumulative totals, and broad categories.
 					</p>
 					<p>
 						<strong>What is not shown:</strong> invoices, line items, work descriptions, strategy, case events, or details about any other person.

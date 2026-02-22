@@ -69,6 +69,17 @@ function lcBand(i, n, x0, x1, gap) {
 	return { x, w: inner };
 }
 
+function lcHash32(s) {
+	// FNV-1a (32-bit)
+	let h = 2166136261;
+	const str = String(s || '');
+	for (let i = 0; i < str.length; i++) {
+		h ^= str.charCodeAt(i);
+		h = Math.imul(h, 16777619);
+	}
+	return h >>> 0;
+}
+
 function lcRenderBars(host, rows, currency, opts) {
 	const accent = lcCssVar('--accent', '#fbbf24');
 	const accent2 = lcCssVar('--accent2', '#22c55e');
@@ -77,6 +88,18 @@ function lcRenderBars(host, rows, currency, opts) {
 	const text = lcCssVar('--text', 'rgba(255,255,255,0.92)');
 	const mono = lcCssVar('--font-mono', 'ui-monospace');
 
+	const palette = [
+		'#38bdf8', // sky
+		'#fb7185', // rose
+		'#a3e635', // lime
+		'#f97316', // orange
+		'#2dd4bf', // teal
+		'#60a5fa', // blue
+		'#eab308', // yellow
+		'#34d399', // emerald
+		'#f472b6', // pink
+	];
+
 	const width = host.clientWidth || 900;
 	const height = 260;
 	const m = { l: 56, r: 16, t: 18, b: 56 };
@@ -84,7 +107,6 @@ function lcRenderBars(host, rows, currency, opts) {
 	const H = height;
 	let x0 = m.l;
 	const x1 = W - m.r;
-	const y0 = m.t;
 	const y1 = H - m.b;
 
 	const maxTotal = rows.reduce((acc, r) => Math.max(acc, Number(r.total || 0)), 0);
@@ -98,6 +120,46 @@ function lcRenderBars(host, rows, currency, opts) {
 	const longest = ticks.reduce((acc, t) => Math.max(acc, lcMoney(currency, t).length), 0);
 	// Monospace at 11px: ~7px per char + padding.
 	x0 = Math.max(x0, 14 + longest * 7 + 10);
+
+	const catTotals = (() => {
+		const map = new Map();
+		for (const r of rows) {
+			for (const [k, v] of Object.entries(r.byCategory || {})) {
+				const prev = map.get(k) || 0;
+				map.set(k, prev + Number(v || 0));
+			}
+		}
+		return map;
+	})();
+
+	const cats = [...catTotals.entries()]
+		.sort((a, b) => b[1] - a[1])
+		.map(([k]) => k);
+
+	const colorFor = (cat) => {
+		const s = String(cat || '').toLowerCase();
+		if (s.includes('mediat')) return accent2;
+		if (s.includes('legal') || s.includes('counsel') || s.includes('solicitor')) return accent;
+		if (s.includes('other')) return 'rgba(255,255,255,0.72)';
+		return palette[lcHash32(cat) % palette.length];
+	};
+
+	let legendH = 0;
+	if (opts.view === 'category' && cats.length) {
+		let lx = x0;
+		let rowsUsed = 1;
+		for (const c of cats) {
+			const itemW = 14 + Math.min(220, c.length * 7 + 30);
+			if (lx + itemW > x1) {
+				rowsUsed++;
+				lx = x0;
+			}
+			lx += itemW;
+		}
+		legendH = rowsUsed * 16 + 10;
+	}
+
+	const y0 = m.t + legendH;
 
 	const svg = lcSvgEl('svg', {
 		viewBox: `0 0 ${W} ${H}`,
@@ -126,31 +188,23 @@ function lcRenderBars(host, rows, currency, opts) {
 	// X axis
 	svg.appendChild(lcSvgEl('line', { x1: x0, y1: y1, x2: x1, y2: y1, stroke: axis, 'stroke-width': 1 }));
 
-	const cats = (() => {
-		const set = new Set();
-		for (const r of rows) for (const k of Object.keys(r.byCategory || {})) set.add(k);
-		return [...set.values()];
-	})();
-
-	const colorFor = (cat) => {
-		const s = String(cat || '').toLowerCase();
-		if (s.includes('mediat')) return accent2;
-		if (s.includes('legal') || s.includes('counsel')) return accent;
-		return text;
-	};
-
 	// Legend (category view)
 	if (opts.view === 'category' && cats.length) {
 		let lx = x0;
-		let ly = 14;
+		let ly = m.t + 14;
 		for (const c of cats) {
+			const itemW = 14 + Math.min(220, c.length * 7 + 30);
+			if (lx + itemW > x1) {
+				lx = x0;
+				ly += 16;
+			}
 			const g = lcSvgEl('g');
 			g.appendChild(lcSvgEl('rect', { x: lx, y: ly - 10, width: 10, height: 10, rx: 3, fill: colorFor(c), opacity: 0.95 }));
 			const t = lcSvgEl('text', { x: lx + 14, y: ly - 2, fill: faint, 'font-family': mono, 'font-size': 11 });
 			t.textContent = c;
 			g.appendChild(t);
 			svg.appendChild(g);
-			lx += 14 + Math.min(220, c.length * 7 + 30);
+			lx += itemW;
 		}
 	}
 

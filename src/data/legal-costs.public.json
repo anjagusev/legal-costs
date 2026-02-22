@@ -1,69 +1,92 @@
 {
   "currency": "CAD",
-  "generatedAt": "2026-02-22T02:08:49.812272Z",
+  "generatedAt": "2026-02-22T02:36:33.596388Z",
   "source": {
     "workbook": "Legal_Etransfer_Payments.xlsx",
     "sheet": "Legal Payments"
   },
   "asOfMonth": "2026-02",
-  "total": 17757.53,
+  "total": 21492.82,
   "monthly": [
     {
+      "month": "2025-07",
+      "total": 320.84,
+      "cumulative": 320.84,
+      "byCategory": {
+        "Other professional fees": 320.84
+      }
+    },
+    {
       "month": "2025-08",
-      "total": 5836.75,
-      "cumulative": 5836.75,
+      "total": 6722.0,
+      "cumulative": 7042.84,
       "byCategory": {
         "Mediation": 5536.75,
+        "Other professional fees": 885.25,
         "Legal counsel": 300.0
       }
     },
     {
       "month": "2025-09",
-      "total": 593.24,
-      "cumulative": 6429.99,
+      "total": 877.24,
+      "cumulative": 7920.08,
       "byCategory": {
-        "Legal counsel": 593.24
+        "Legal counsel": 593.24,
+        "Other professional fees": 284.0
       }
     },
     {
       "month": "2025-10",
-      "total": 3852.58,
-      "cumulative": 10282.57,
+      "total": 5015.47,
+      "cumulative": 12935.55,
       "byCategory": {
         "Mediation": 2808.46,
+        "Other professional fees": 1162.89,
         "Legal counsel": 1044.12
       }
     },
     {
       "month": "2025-11",
-      "total": 3980.4,
-      "cumulative": 14262.97,
+      "total": 4250.4,
+      "cumulative": 17185.95,
       "byCategory": {
         "Legal counsel": 2084.82,
-        "Mediation": 1895.58
+        "Mediation": 1895.58,
+        "Other professional fees": 270.0
       }
     },
     {
       "month": "2025-12",
-      "total": 2877.58,
-      "cumulative": 17140.55,
+      "total": 3147.58,
+      "cumulative": 20333.53,
       "byCategory": {
         "Mediation": 2308.03,
-        "Legal counsel": 569.55
+        "Legal counsel": 569.55,
+        "Other professional fees": 270.0
+      }
+    },
+    {
+      "month": "2026-01",
+      "total": 272.31,
+      "cumulative": 20605.84,
+      "byCategory": {
+        "Other professional fees": 272.31
       }
     },
     {
       "month": "2026-02",
-      "total": 616.98,
-      "cumulative": 17757.53,
+      "total": 886.98,
+      "cumulative": 21492.82,
       "byCategory": {
-        "Legal counsel": 616.98
+        "Legal counsel": 616.98,
+        "Other professional fees": 270.0
       }
     }
   ],
   "byCategory": {
     "Mediation": 12548.82,
-    "Legal counsel": 5208.71
+    "Legal counsel": 5208.71,
+    "Other professional fees": 3735.29
   },
   "privacy": {
     "detailLevel": "monthly-aggregates",
